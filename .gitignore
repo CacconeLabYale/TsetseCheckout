@@ -1,6 +1,9 @@
 # PyCharm Config Stuff
 .idea/
 
+# Ignore DB stuff
+*.db
+
 *.py[cod]
 
 # C extensions
