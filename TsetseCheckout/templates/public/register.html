@@ -22,6 +22,14 @@
                 {{form.confirm.label}}
                 {{form.confirm(placeholder="Password (again)", class_="form-control")}}
             </div>
+            <div class="form-group">
+                {{form.pi_name.label}}
+                {{form.pi_name(placeholder="The name of your PI", class_="form-control")}}
+            </div>
+            <div class="form-group">
+                {{form.pi_email.label}}
+                {{form.pi_email(placeholder="The email of your PI", class_="form-control")}}
+            </div>
             <p><input class="btn btn-default btn-submit" type="submit" value="Register"></p>
     </form>
     <p><em>Already registered?</em> Click <a href="/">here</a> to login.</p>
