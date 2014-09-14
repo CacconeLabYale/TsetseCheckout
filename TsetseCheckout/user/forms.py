@@ -11,8 +11,8 @@ class RegisterForm(Form):
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=40)])
     confirm = PasswordField('Verify password', [DataRequired(), EqualTo('password', message='Passwords must match')])
 
-    pi_name = StringField('Username', validators=[DataRequired(), Length(min=3, max=25)])
-    pi_email = StringField('Email', validators=[DataRequired(), Email(), Length(min=6, max=40)])
+    pi_name = StringField("PI's Name", validators=[DataRequired(), Length(min=3, max=25)])
+    pi_email = StringField("PI's Email", validators=[DataRequired(), Email(), Length(min=6, max=40)])
 
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)
