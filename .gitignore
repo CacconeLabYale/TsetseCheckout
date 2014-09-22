@@ -2,7 +2,7 @@
 .idea/
 
 # Ignore DB stuff
-*.db
+#*.db
 
 *.py[cod]
 

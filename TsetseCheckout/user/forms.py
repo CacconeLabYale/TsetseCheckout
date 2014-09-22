@@ -1,6 +1,9 @@
+from flask.ext import uploads
+
 from flask_wtf import Form
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 from .models import User
 
@@ -31,3 +34,7 @@ class RegisterForm(Form):
             self.email.errors.append("Email already registered")
             return False
         return True
+
+
+class UploadForm(Form):
+    pass
