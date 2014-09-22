@@ -4,6 +4,7 @@
 <div class="container-narrow">
   <h1>Register</h1>
     <br/>
+    <p><em>All fields required.</em></p>
     <form id="registerForm" class="form form-register" method="POST" action="" role="form">
             {{ form.hidden_tag() }}
             <div class="form-group">
@@ -21,6 +22,14 @@
             <div class="form-group">
                 {{form.confirm.label}}
                 {{form.confirm(placeholder="Password (again)", class_="form-control")}}
+            </div>
+            <div class="form-group">
+                {{form.pi_name.label}}
+                {{form.pi_name(placeholder="The name of your PI", class_="form-control")}}
+            </div>
+            <div class="form-group">
+                {{form.pi_email.label}}
+                {{form.pi_email(placeholder="The email of your PI", class_="form-control")}}
             </div>
             <p><input class="btn btn-default btn-submit" type="submit" value="Register"></p>
     </form>
