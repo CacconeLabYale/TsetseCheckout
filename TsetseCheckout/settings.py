@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 import os
 
+from TsetseCheckout import utils
+
 os_env = os.environ
+
 
 class Config(object):
     SECRET_KEY = os_env['TSETSECHECKOUT_SECRET']  # TODO: Change me
@@ -12,6 +15,14 @@ class Config(object):
     DEBUG_TB_ENABLED = False  # Disable Debug toolbar
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
+
+    # Set up Mail stuff
+    MAIL_SERVER = "smtp.gmail.com"
+    MAIL_PORT = 465
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = utils.get_file_as_string(os_env["TSETSECHECKOUT_M1"]).strip()
+    MAIL_PASSWORD = utils.get_file_as_string(os_env["TSETSECHECKOUT_M2"]).strip()
+    DEFAULT_MAIL_SENDER = MAIL_USERNAME
 
 
 class ProdConfig(Config):

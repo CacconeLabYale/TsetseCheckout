@@ -34,9 +34,24 @@ def test():
     exit_code = pytest.main(['tests', '--verbose'])
     return exit_code
 
+
+@manager.command
+def get_app():
+    """
+    Returns `app`.
+    Useful for getting a fully initialized app instance for debugging in ipython.
+    """
+    return app
+
 manager.add_command('server', Server())
 manager.add_command('shell', Shell(make_context=_make_context))
 manager.add_command('db', MigrateCommand)
 
+
 if __name__ == '__main__':
-    manager.run()
+
+    if 'get_app' in sys.argv[1:]:
+        get_app()
+    else:
+        manager.run()
+
