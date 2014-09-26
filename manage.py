@@ -7,7 +7,7 @@ from flask_script import Manager, Shell, Server
 from flask.ext.migrate import MigrateCommand
 
 from TsetseCheckout.app import create_app
-from TsetseCheckout.user.models import User
+from TsetseCheckout.user import models
 from TsetseCheckout.settings import DevConfig, ProdConfig
 from TsetseCheckout.database import db
 
@@ -22,9 +22,9 @@ TEST_CMD = "py.test tests"
 
 def _make_context():
     """Return context dict for a shell session so you can access
-    app, db, and the User model by default.
+    app, db, and user.models model by default.
     """
-    return {'app': app, 'db': db, 'User': User}
+    return {'app': app, 'db': db, 'models': models}
 
 
 @manager.command

@@ -2,7 +2,7 @@
 """The app module, containing the app factory function."""
 from flask import Flask, render_template, g
 
-from TsetseCheckout.settings import ProdConfig
+from TsetseCheckout.settings import ProdConfig, DevConfig
 from TsetseCheckout.assets import assets
 from TsetseCheckout.extensions import (
     bcrypt,

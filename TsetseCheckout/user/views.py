@@ -44,7 +44,7 @@ def checkout():
 def checkout_excel():
     if request.method == 'POST' and 'spreadsheet' in request.files:
         filename = upload_sets.spreadsheets.save(request.files['spreadsheet'], folder=g.user.username)
-        upload = Upload(filename=filename, user_id=g.user.id)
+        upload = Upload(filename=filename, user=g.user)
         upload.save()
         flash("Spreadsheet saved. You should receive a confirmation email soon.  If not, click the 'Contact' link at "
               "the bottom of this page and email the administrator.", 'success')
