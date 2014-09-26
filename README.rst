@@ -1,5 +1,5 @@
 ===============================
-TsetseSampleDB Checkout System
+TsetseSampleDB
 ===============================
 
 A system for users to request sample tubes from the Aksoy/Caccone Labs' tsetse fly specimen database.
