@@ -36,5 +36,3 @@ class RegisterForm(Form):
         return True
 
 
-class UploadForm(Form):
-    pass
