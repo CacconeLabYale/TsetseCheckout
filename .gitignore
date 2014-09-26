@@ -1,6 +1,7 @@
 # PyCharm Config Stuff
 .idea/
 
+
 # Ignore DB stuff
 #*.db
 
@@ -51,3 +52,6 @@ docs/_build
 # Virtualenvs
 env
 env*
+
+# Dont track the further contents of the uploads
+TsetseCheckout/static/uploads
