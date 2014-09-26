@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import datetime as dt
 
-from flask.ext.login import UserMixin
+from flask import g
+from flask_login import UserMixin
 
 from TsetseCheckout.extensions import bcrypt
 from TsetseCheckout.database import (
@@ -12,6 +13,17 @@ from TsetseCheckout.database import (
     relationship,
     SurrogatePK,
 )
+
+
+class Upload(SurrogatePK, Model):
+    __tablename__ = "uploads"
+
+    filename = Column(db.String(128), nullable=True)
+    created_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    def __init__(self, filename, user_id, **kwargs):
+        db.Model.__init__(self, filename=filename, user_id=user_id, **kwargs)
 
 
 class Role(SurrogatePK, Model):
@@ -41,6 +53,8 @@ class User(UserMixin, SurrogatePK, Model):
     is_admin = Column(db.Boolean(), default=False)
     pi_name = Column(db.String(80), nullable=False)
     pi_email = Column(db.String(80), nullable=False)
+
+    uploads = db.relationship('Upload', backref='users', lazy='dynamic')
 
     def __init__(self, username, email, pi_name, pi_email, password=None, **kwargs):
         db.Model.__init__(self, username=username, email=email, pi_name=pi_name, pi_email=pi_email, **kwargs)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """The app module, containing the app factory function."""
-from flask import Flask, render_template
+from flask import Flask, render_template, g
 
 from TsetseCheckout.settings import ProdConfig
 from TsetseCheckout.assets import assets
@@ -12,8 +12,10 @@ from TsetseCheckout.extensions import (
     migrate,
     debug_toolbar,
     mail,
+    flask_uploads,
 )
 from TsetseCheckout import public, user
+from TsetseCheckout import upload_sets
 
 
 def create_app(config_object=ProdConfig):
@@ -39,6 +41,7 @@ def register_extensions(app):
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)
     mail.init_app(app)
+    flask_uploads.configure_uploads(app=app, upload_sets=tuple(upload_sets.values()))
     return None
 
 
