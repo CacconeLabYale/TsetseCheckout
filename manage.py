@@ -3,7 +3,7 @@
 import os
 import sys
 import subprocess
-from flask.ext.script import Manager, Shell, Server
+from flask_script import Manager, Shell, Server
 from flask.ext.migrate import MigrateCommand
 
 from TsetseCheckout.app import create_app
@@ -50,8 +50,5 @@ manager.add_command('db', MigrateCommand)
 
 if __name__ == '__main__':
 
-    if 'get_app' in sys.argv[1:]:
-        get_app()
-    else:
-        manager.run()
+    manager.run()
 
