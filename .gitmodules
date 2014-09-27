@@ -1,0 +1,3 @@
+[submodule "TsetseCheckout/static/libs/bootstrap/themes/bootswatch"]
+	path = TsetseCheckout/static/libs/bootstrap/themes/bootswatch
+	url = https://github.com/thomaspark/bootswatch.git
