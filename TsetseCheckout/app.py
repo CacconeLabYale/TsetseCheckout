@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """The app module, containing the app factory function."""
-from flask import Flask, render_template
+from flask import Flask, render_template, g
 
-from TsetseCheckout.settings import ProdConfig
+from TsetseCheckout.settings import ProdConfig, DevConfig
 from TsetseCheckout.assets import assets
 from TsetseCheckout.extensions import (
     bcrypt,
@@ -12,8 +12,11 @@ from TsetseCheckout.extensions import (
     migrate,
     debug_toolbar,
     mail,
+    flask_uploads,
 )
-from TsetseCheckout import public, user
+from TsetseCheckout.user import views as user_views
+from TsetseCheckout.public import views as public_views
+from TsetseCheckout import upload_sets
 
 
 def create_app(config_object=ProdConfig):
@@ -39,12 +42,13 @@ def register_extensions(app):
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)
     mail.init_app(app)
+    flask_uploads.configure_uploads(app=app, upload_sets=tuple(upload_sets.values()))
     return None
 
 
 def register_blueprints(app):
-    app.register_blueprint(public.views.blueprint)
-    app.register_blueprint(user.views.blueprint)
+    app.register_blueprint(public_views.blueprint)
+    app.register_blueprint(user_views.blueprint)
     return None
 
 

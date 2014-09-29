@@ -3,11 +3,14 @@
 import os
 import sys
 import subprocess
-from flask.ext.script import Manager, Shell, Server
+
+from flask_script import Manager, Shell, Server
 from flask.ext.migrate import MigrateCommand
 
+from bunch import Bunch
+from flask import g
 from TsetseCheckout.app import create_app
-from TsetseCheckout.user.models import User
+from TsetseCheckout.user import models
 from TsetseCheckout.settings import DevConfig, ProdConfig
 from TsetseCheckout.database import db
 
@@ -16,15 +19,18 @@ if os.environ.get("TSETSECHECKOUT_ENV") == 'prod':
 else:
     app = create_app(DevConfig)
 
+# Make calling extensions take less typing
+app.extensions = Bunch(app.extensions)
+
 manager = Manager(app)
 TEST_CMD = "py.test tests"
 
 
 def _make_context():
     """Return context dict for a shell session so you can access
-    app, db, and the User model by default.
+    app, db, and user.models model by default.
     """
-    return {'app': app, 'db': db, 'User': User}
+    return {'app': app, 'db': db, 'models': models}
 
 
 @manager.command
@@ -50,8 +56,5 @@ manager.add_command('db', MigrateCommand)
 
 if __name__ == '__main__':
 
-    if 'get_app' in sys.argv[1:]:
-        get_app()
-    else:
-        manager.run()
+    manager.run()
 

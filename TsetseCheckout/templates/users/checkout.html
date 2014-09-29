@@ -1,0 +1,42 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<!-- Main jumbotron for a primary marketing message or call to action -->
+<div class="jumbotron">
+
+  <h1>Specimen Checkout: {{ session.username }}</h1>
+
+  <p class="text-primary">Please select a method to input your requests.</p>
+</div><!-- /.jumbotron -->
+
+<div class="body-content">
+  <div class="row">
+    <div class="col-lg-4">
+      <!--<h2><i class="fa fa-file-excel-o"></i> Upload Excel File</h2>-->
+      <h2><i class="fa fa-upload"></i> Upload Excel File</h2>
+
+      <p><span class="label label-info">Good for large requests.</span></p>
+      <p>Upload an excel file.</p>
+      <p><a class="btn btn-default" href="{{ url_for('user.checkout_excel') }}"> Use Upload </a></p>
+    </div>
+
+    <div class="col-lg-4">
+      <h2><i class="fa fa-edit"></i> Web Form</h2>
+
+      <p><span class="label label-info">Best for small requests.</span></p>
+      <p>Fill in requests via web form individually.</p>
+      <p><a href="THE_URL" class="btn btn-default" href="#"> Use Form </a></p>
+      <p><div class="alert alert-warning">Not yet implemented.</div></p>
+    </div>
+
+    <div class="col-lg-4">
+      <h2><i class="fa fa-search"></i> TsetseSampleDB</h2>
+
+      <p><span class="label label-info">For when you don't need <em>SPECIFIC</em> tubes.</span></p>
+      <p>Select tubes based on queries from the TsetseSampleDB.</p>
+      <p><a href="THE_URL" class="btn btn-default" href="#"> Use Search </a></p>
+      <p><div class="alert alert-warning">Not yet implemented.</div></p>
+    </div>
+  </div><!-- /.row -->
+</div>
+{% endblock %}

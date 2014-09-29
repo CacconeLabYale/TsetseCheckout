@@ -21,5 +21,7 @@ cache = Cache()
 from flask.ext.debugtoolbar import DebugToolbarExtension
 debug_toolbar = DebugToolbarExtension()
 
-from flask.ext.mail import Mail
+from flask_mail import Mail
 mail = Mail()
+
+from flask.ext import uploads as flask_uploads

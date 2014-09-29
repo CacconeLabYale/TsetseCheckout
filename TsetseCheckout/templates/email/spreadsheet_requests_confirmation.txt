@@ -1,0 +1,12 @@
+Dear {{ user.username }},
+
+Your recent checkout request {{ pass_or_fail }}!
+
+Details are provided below.
+
+{{ details }}
+
+
+Regards,
+
+The TsetseSampleDB Admins 
