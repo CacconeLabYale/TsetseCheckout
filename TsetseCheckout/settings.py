@@ -27,6 +27,9 @@ class Config(object):
     # Set up flask-upload stuff
     UPLOADS_DEFAULT_DEST = "TsetseCheckout/static/uploads/"
 
+    # Admins list
+    ADMINS = ['tsetse.sample.db@gmail.com', 'gus.dunn@yale.edu']
+
 
 class ProdConfig(Config):
     """Production configuration."""

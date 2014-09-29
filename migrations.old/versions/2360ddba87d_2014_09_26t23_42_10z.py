@@ -23,7 +23,7 @@ def upgrade():
     sa.Column('village_symbol', sa.String(length=15), nullable=False),
     sa.Column('collection_month', sa.Integer(), nullable=False),
     sa.Column('collection_year', sa.Integer(), nullable=False),
-    sa.Column('sample_type', sa.String(length=15), nullable=False),
+    sa.Column('tissue_type', sa.String(length=15), nullable=False),
     sa.Column('tube_number', sa.Integer(), nullable=False),
     sa.Column('date_of_request', sa.DateTime(), nullable=False),
     sa.Column('date_approved', sa.DateTime(), nullable=True),

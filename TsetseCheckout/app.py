@@ -14,7 +14,8 @@ from TsetseCheckout.extensions import (
     mail,
     flask_uploads,
 )
-from TsetseCheckout import public, user
+from TsetseCheckout.user import views as user_views
+from TsetseCheckout.public import views as public_views
 from TsetseCheckout import upload_sets
 
 
@@ -46,8 +47,8 @@ def register_extensions(app):
 
 
 def register_blueprints(app):
-    app.register_blueprint(public.views.blueprint)
-    app.register_blueprint(user.views.blueprint)
+    app.register_blueprint(public_views.blueprint)
+    app.register_blueprint(user_views.blueprint)
     return None
 
 

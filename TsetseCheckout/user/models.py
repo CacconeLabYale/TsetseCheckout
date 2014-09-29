@@ -2,7 +2,6 @@
 import datetime as dt
 
 from bunch import Bunch
-from flask import g
 from flask_login import UserMixin
 
 from TsetseCheckout.extensions import bcrypt
@@ -15,35 +14,84 @@ from TsetseCheckout.database import (
     SurrogatePK,
 )
 
+from TsetseCheckout.data import validation as qc
+from TsetseCheckout import errors as e
+
 
 class CheckoutRequest(SurrogatePK, Model):
     __tablename__ = "checkout_requests"
 
-    username = Column(db.Integer, db.ForeignKey('users.id'))
+    username = Column(db.String(80), db.ForeignKey('users.username'))
     to_produce = Column(db.String(60), nullable=False)  # TODO: add validation
     village_symbol = Column(db.String(15), nullable=False)  # TODO: add validation
     collection_month = Column(db.Integer(), nullable=False)  # TODO: add validation
     collection_year = Column(db.Integer(), nullable=False)  # TODO: add validation
-    sample_type = Column(db.String(15), nullable=False)  # TODO: add validation
+    tissue_type = Column(db.String(15), default="OTHER", nullable=False)  # TODO: add validation
     tube_number = Column(db.Integer, nullable=False)  # TODO: add validation
     date_of_request = Column(db.DateTime, nullable=False)
     date_approved = Column(db.DateTime, nullable=True)
     new_building = Column(db.String(5), nullable=False)  # TODO: add validation
-    new_room = Column(db.Integer, nullable=False)
+    new_room = Column(db.String(8), nullable=False)
     new_cryo = Column(db.String(30), nullable=False)
     sample_status = Column(db.String(15), nullable=False)  # TODO: add validation
-    passed_validation = Column(db.Boolean, nullable=True)
+    # passed_validation = Column(db.Boolean, nullable=True)
 
-    def __init__(self, username, to_produce, village_symbol, collection_month, collection_year, sample_type,
+    def __init__(self, username, to_produce, village_symbol, collection_month, collection_year, tissue_type,
                  tube_number, date_of_request, date_approved, new_building, new_room, new_cryo, sample_status,
-                 passed_validation, **kwargs):
+                 **kwargs):
+
+        self.validation_failures = None
+
         columns = Bunch(username=username, to_produce=to_produce, village_symbol=village_symbol,
-                        collection_month=collection_month, collection_year=collection_year, sample_type=sample_type,
+                        collection_month=collection_month, collection_year=collection_year, tissue_type=tissue_type,
                         tube_number=tube_number, date_of_request=date_of_request, date_approved=date_approved,
-                        new_building=new_building, new_room=new_room, new_cryo=new_cryo, sample_status=sample_status,
-                        passed_validation=passed_validation)
-        self._validate_columns(columns)
-        db.Model.__init__(*columns, **kwargs)
+                        new_building=new_building, new_room=new_room, new_cryo=new_cryo, sample_status=sample_status)
+
+        validated_columns = self._validate_columns(columns)
+
+        db.Model.__init__(self, **validated_columns)
+
+    # TODO: look at using sqlalchemy 'listeners' for automated EVERY-TIME validations
+    def _validate_columns(self, columns_bunch):
+
+        """
+        Handles preliminary data validation of column values.
+        :param columns_bunch:
+        :return:
+        """
+        c = columns_bunch
+        exceptions = Bunch()
+        validated = Bunch()
+        validation_funcs = Bunch({"username": qc.username_exists,
+                                  "to_produce": qc.valid_fly_derivatives,
+                                  "village_symbol": qc.valid_village_id,
+                                  "collection_month": qc.valid_month,
+                                  "collection_year": qc.valid_year,
+                                  "tissue_type": qc.valid_tissue_type,
+                                  "tube_number": qc.valid_tube_number,
+                                  "new_building": qc.valid_building_code,
+                                  "sample_status": qc.valid_sample_status})
+
+        for key, value in c.iteritems():
+            try:
+                # If there is a validation function, run it and store the result if it succeeds.
+                vfunc = validation_funcs[key]
+                validated[key] = vfunc(value)
+            except e.TsetsedbImportError as exc:
+                # Otherwise, store the error msg.
+                exceptions[key] = exc.value
+            except KeyError:
+                try:
+                    # If there wasnt a validation function, just copy the value to the new Bunch.
+                    validated[key] = c[key]
+                except KeyError:
+                    raise
+
+        if exceptions:
+            self.validation_failures = exceptions
+            return validated
+        else:
+            return validated
 
 
 class Upload(SurrogatePK, Model):
@@ -52,10 +100,8 @@ class Upload(SurrogatePK, Model):
     filename = Column(db.String(128), nullable=True)
     created_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow, unique=True)
     user_id = Column(db.Integer, db.ForeignKey('users.id'))
+    validated = Column(db.Boolean, nullable=False, default=False)
     processed = Column(db.DateTime, nullable=True)
-
-    # def __init__(self, filename, user_id, **kwargs):
-    #     db.Model.__init__(self, filename=filename, user_id=user_id, **kwargs)
 
 
 class Role(SurrogatePK, Model):

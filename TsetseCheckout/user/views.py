@@ -5,7 +5,9 @@ from flask_login import login_required, current_user
 from jinja2 import TemplateNotFound
 
 from TsetseCheckout import upload_sets
-from .models import User, Upload
+from TsetseCheckout.user.models import Upload
+from TsetseCheckout.processing.checkouts.spreadsheets import process_requests
+from TsetseCheckout import email
 
 blueprint = Blueprint("user", __name__, url_prefix='/users', static_folder="../static")
 
@@ -45,9 +47,17 @@ def checkout_excel():
     if request.method == 'POST' and 'spreadsheet' in request.files:
         filename = upload_sets.spreadsheets.save(request.files['spreadsheet'], folder=g.user.username)
         upload = Upload(filename=filename, user=g.user)
-        upload.save()
-        flash("Spreadsheet saved. You should receive a confirmation email soon.  If not, click the 'Contact' link at "
-              "the bottom of this page and email the administrator.", 'success')
+        results, passed = process_requests(upload)
+        if passed:
+            upload.save()
+            flash("Your requests have been logged. You should receive a confirmation email soon.  If not, click the "
+                  "'Contact' link at the bottom of this page and email the administrator.", 'success')
+        else:
+            flash("There were errors in your submission and it can not be processed.  Please edit your file and try "
+                  "again. You should receive a confirmation email detailing the errors soon.  If not, click the "
+                  "'Contact' link at the bottom of this page and email the administrator.", 'danger')
+
+        email.notify_spreadsheet_req_confirm(g.user, results, passed)
         return render_template('users/checkout.html')
     else:
         pass

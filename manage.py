@@ -3,9 +3,12 @@
 import os
 import sys
 import subprocess
+
 from flask_script import Manager, Shell, Server
 from flask.ext.migrate import MigrateCommand
 
+from bunch import Bunch
+from flask import g
 from TsetseCheckout.app import create_app
 from TsetseCheckout.user import models
 from TsetseCheckout.settings import DevConfig, ProdConfig
@@ -15,6 +18,9 @@ if os.environ.get("TSETSECHECKOUT_ENV") == 'prod':
     app = create_app(ProdConfig)
 else:
     app = create_app(DevConfig)
+
+# Make calling extensions take less typing
+app.extensions = Bunch(app.extensions)
 
 manager = Manager(app)
 TEST_CMD = "py.test tests"

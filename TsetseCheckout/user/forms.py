@@ -5,7 +5,7 @@ from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
-from .models import User
+from TsetseCheckout.user.models import User
 
 
 class RegisterForm(Form):

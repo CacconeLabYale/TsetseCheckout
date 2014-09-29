@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
 """Helper utilities and decorators."""
 from flask import flash
+import TsetseCheckout.user.models as models
+
+
+def get_all_users():
+    """
+    Returns list of all User rows.
+    :return:
+    """
+    return models.User.query.all()
 
 
 def get_file_as_string(path):
