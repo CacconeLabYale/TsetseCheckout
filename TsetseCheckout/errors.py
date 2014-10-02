@@ -12,6 +12,8 @@ Purpose:
 """
 __author__ = 'Gus Dunn'
 
+from flask.ext.uploads import UploadNotAllowed
+
 
 class TsetsedbError(Exception):
     """
@@ -27,6 +29,17 @@ class TsetsedbError(Exception):
 class TsetsedbImportError(TsetsedbError):
     """
     Error originating from errors in the format or contents of files provided as import material to `tsetseDB`.
+    """
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
+
+class TsetsedbInsanityError(TsetsedbError):
+    """
+    Error originating from a failure of a sanity check.
     """
     def __init__(self, value):
         self.value = value
