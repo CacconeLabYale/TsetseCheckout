@@ -106,6 +106,7 @@ def process_requests(upload):
     # init and test validation status of requests
     for index, request in enumerate(get_requests(upload)):
 
+        # collect request object and update validation status of this request set
         if request.validation_failures is not None:
             request_objects.append([index, request])
             validation_status = False
@@ -116,9 +117,5 @@ def process_requests(upload):
         # If all good, commit them to the DB
         for req in request_objects:
             req[1].save()
-    else:
-        pass
 
     return request_objects, validation_status
-
-
