@@ -27,6 +27,11 @@ from TsetseCheckout import data
 from TsetseCheckout import errors as e
 
 
+# Common email messages or warnings
+email = Bunch()
+email.spam_warning = "You may need to add 'tsetse.sample.db@gmail.com' to your email 'safe-list' to avoid missing " \
+                     "email messages from us due to your spam filters."
+
 # Find the full path of the data package
 data_dir = os.path.dirname(os.path.realpath(data.__file__))
 

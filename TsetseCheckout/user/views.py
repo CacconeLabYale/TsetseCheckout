@@ -2,12 +2,15 @@
 from flask import g
 from flask import (Blueprint, request, render_template, flash, url_for, redirect, session, abort)
 from flask_login import login_required, current_user
+
 from jinja2 import TemplateNotFound
 
 from TsetseCheckout import upload_sets
 from TsetseCheckout.user.models import Upload
 from TsetseCheckout.processing.checkouts.spreadsheets import process_requests
 from TsetseCheckout import email
+from TsetseCheckout import errors as e
+from TsetseCheckout.data import constants as c
 
 blueprint = Blueprint("user", __name__, url_prefix='/users', static_folder="../static")
 
@@ -45,22 +48,35 @@ def checkout():
 @login_required
 def checkout_excel():
     if request.method == 'POST' and 'spreadsheet' in request.files:
-        filename = upload_sets.spreadsheets.save(request.files['spreadsheet'], folder=g.user.username)
-        upload = Upload(filename=filename, user=g.user)
-        results, passed = process_requests(upload)
-        if passed:
-            upload.save()
-            flash("Your requests have been logged. You should receive a confirmation email soon.  If not, click the "
-                  "'Contact' link at the bottom of this page and email the administrator.", 'success')
-        else:
-            flash("There were errors in your submission and it can not be processed.  Please edit your file and try "
-                  "again. You should receive a confirmation email detailing the errors soon.  If not, click the "
-                  "'Contact' link at the bottom of this page and email the administrator.", 'danger')
+        try:
+            filename = upload_sets.spreadsheets.save(request.files['spreadsheet'], folder=g.user.username)
+            upload = Upload(filename=filename, user=g.user)
 
-        email.notify_spreadsheet_req_confirm(g.user, results, passed)
+        except e.UploadNotAllowed:
+            flash("The file you provided was not an allowed type.  Please only provide 'xls' or 'xlsx' files.",
+                  "danger")
+            return render_template('users/checkout_excel.html')
+
+        try:
+            results, passed = process_requests(upload)
+            if passed:
+                upload.save()
+                flash("Your requests have been logged. You should receive a confirmation email soon.  If not, "
+                      "click  the 'Contact' link at the bottom of this page and email the administrator.\n\n"
+                      "%(spam)s" % {'spam': c.email.spam_warning}, 'success')
+            else:
+                flash("There were errors in your submission and it can not be processed.  Please edit your file and try "
+                      "again. You should receive a confirmation email detailing the errors soon.  If not, click the "
+                      "'Contact' link at the bottom of this page and email the administrator.\n\n"
+                      "%(spam)s" % {'spam': c.email.spam_warning}, 'danger')
+
+            email.notify_spreadsheet_req_confirm(g.user, results, passed)
+
+        except e.TsetsedbImportError as exc:
+            flash(exc.value, 'danger')
+            return render_template('users/checkout_excel.html')
+
         return render_template('users/checkout.html')
-    else:
-        pass
 
     return render_template('users/checkout_excel.html')
 
