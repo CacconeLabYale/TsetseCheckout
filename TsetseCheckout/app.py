@@ -25,7 +25,8 @@ def create_app(config_object=ProdConfig):
 
     :param config_object: The configuration object to use.
     """
-    app = Flask(__name__)
+    # app = Flask(__name__)
+    app = Flask("TsetseCheckout")
     app.config.from_object(config_object)
     register_extensions(app)
     register_blueprints(app)

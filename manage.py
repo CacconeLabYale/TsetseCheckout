@@ -19,6 +19,8 @@ if os.environ.get("TSETSECHECKOUT_ENV") == 'prod':
 else:
     app = create_app(DevConfig)
 
+
+
 # Make calling extensions take less typing
 app.extensions = Bunch(app.extensions)
 
