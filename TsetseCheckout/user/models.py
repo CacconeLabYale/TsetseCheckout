@@ -37,10 +37,12 @@ class CheckoutRequest(SurrogatePK, Model):
     # passed_validation = Column(db.Boolean, nullable=True)
 
     def __init__(self, username, to_produce, village_symbol, collection_month, collection_year, tissue_type,
-                 tube_number, date_of_request, date_approved, new_building, new_room, new_cryo, sample_status,
+                 tube_number, new_building, new_room, new_cryo, sample_status=0, date_approved=None,
+                 date_of_request=dt.datetime.utcnow(),
                  **kwargs):
 
         self.validation_failures = None
+        self.tube_available = None
 
         columns = Bunch(username=username, to_produce=to_produce, village_symbol=village_symbol,
                         collection_month=collection_month, collection_year=collection_year, tissue_type=tissue_type,
@@ -49,7 +51,54 @@ class CheckoutRequest(SurrogatePK, Model):
 
         validated_columns = self._validate_columns(columns)
 
+        # run parent class __init__ to populate `self`
         db.Model.__init__(self, **validated_columns)
+
+        # confirm tube is available and update the switches
+        self._tube_is_available()
+
+    def _tube_is_available(self):
+        """
+        Sets `self.tube_available` to `False` and record error message if a previous request exists or the tube is
+        listed as unavail in the tsetseSampleDB.
+        :return:
+        """
+
+        if any([self._existing_requests(),
+                self._tube_is_checkedout()]):  # TODO: The main DB is NOT connected to this website yet!
+
+            self.tube_available = False
+            try:
+                self.validation_failures["TubeNotAvailable"] = "This tube seems to have been requested already or is " \
+                                                               "not available according to the main sampleDB."
+            except TypeError:
+                self.validation_failures = Bunch()
+                self.validation_failures["TubeNotAvailable"] = "This tube seems to have been requested already or is " \
+                                                               "not available according to the main sampleDB."
+        else:
+            self.tube_available = True
+
+    def _tube_is_checkedout(self):
+        """
+        Returns `False` if tube IS available in main DB.
+        :return:
+        """
+        # TODO: CONNECT TO MAIN DB and write REAL code here
+
+        return False
+
+    def _existing_requests(self):
+        """
+        Returns `True` if a request for this already exists.
+        :return:
+        """
+        reqs = self.query.filter_by(village_symbol=self.village_symbol, collection_month=self.collection_month,
+                                    collection_year=self.collection_year, tube_number=self.tube_number).all()
+
+        if len(reqs) > 0:
+            return True
+        else:
+            return False
 
     # TODO: look at using sqlalchemy 'listeners' for automated EVERY-TIME validations
     def _validate_columns(self, columns_bunch):

@@ -81,9 +81,8 @@ def notify_spreadsheet_req_confirm(user, validation_results, passed):
     main_line = "="*50
     mid_line = '-'*25
 
-    details = ["A per line summary of your requests:\n"]
-
-    details.append(main_line)
+    details = ["A per line summary of your requests:\n",
+               main_line]
 
     if passed:
         first = True
