@@ -5,7 +5,7 @@ import sys
 import subprocess
 
 from flask_script import Manager, Shell, Server
-from flask.ext.migrate import MigrateCommand
+from flask_migrate import MigrateCommand
 
 from bunch import Bunch
 from flask import g
@@ -40,14 +40,6 @@ def test():
     exit_code = pytest.main(['tests', '--verbose'])
     return exit_code
 
-
-@manager.command
-def get_app():
-    """
-    Returns `app`.
-    Useful for getting a fully initialized app instance for debugging in ipython.
-    """
-    return app
 
 manager.add_command('server', Server())
 manager.add_command('shell', Shell(make_context=_make_context))

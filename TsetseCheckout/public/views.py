@@ -2,7 +2,7 @@
 '''Public section, including homepage and signup.'''
 from flask import (Blueprint, request, render_template, flash, url_for,
                     redirect, session)
-from flask.ext.login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user
 
 from TsetseCheckout.extensions import login_manager
 from TsetseCheckout.user.models import User
@@ -12,6 +12,7 @@ from TsetseCheckout.utils import flash_errors
 from TsetseCheckout.database import db
 
 blueprint = Blueprint('public', __name__, static_folder="../static")
+
 
 @login_manager.user_loader
 def load_user(id):
@@ -31,6 +32,7 @@ def home():
         else:
             flash_errors(form)
     return render_template("public/home.html", form=form)
+
 
 @blueprint.route('/logout/')
 @login_required
@@ -54,6 +56,7 @@ def register():
     else:
         flash_errors(form)
     return render_template('public/register.html', form=form)
+
 
 @blueprint.route("/about/")
 def about():
