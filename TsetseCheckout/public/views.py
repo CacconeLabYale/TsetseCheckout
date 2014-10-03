@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-'''Public section, including homepage and signup.'''
+"""Public section, including homepage and signup."""
 from flask import (Blueprint, request, render_template, flash, url_for,
-                    redirect, session)
+                   redirect, session)
 from flask_login import login_user, login_required, logout_user
 
 from TsetseCheckout.extensions import login_manager
@@ -9,7 +9,6 @@ from TsetseCheckout.user.models import User
 from TsetseCheckout.public.forms import LoginForm
 from TsetseCheckout.user.forms import RegisterForm
 from TsetseCheckout.utils import flash_errors
-from TsetseCheckout.database import db
 
 blueprint = Blueprint('public', __name__, static_folder="../static")
 
@@ -40,6 +39,7 @@ def logout():
     logout_user()
     flash('You are logged out.', 'info')
     return redirect(url_for('public.home'))
+
 
 @blueprint.route("/register/", methods=['GET', 'POST'])
 def register():
