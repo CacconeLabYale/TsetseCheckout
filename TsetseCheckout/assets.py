@@ -2,7 +2,7 @@
 from flask.ext.assets import Bundle, Environment
 css = Bundle(
     # "libs/bootstrap/dist/css/bootstrap-theme.min.css",
-    "libs/bootstrap/themes/bootswatch/flatly/bootstrap.css",
+    "libs/bootstrap/themes/bootswatch/superhero/bootstrap.css",
     "css/style.css",
     filters="cssmin",
     output="public/css/common.css"

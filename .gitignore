@@ -55,3 +55,6 @@ env*
 
 # Dont track the further contents of the uploads
 TsetseCheckout/static/uploads
+
+# Dont track bootswatch updates
+TsetseCheckout/static/libs/bootstrap/themes/bootswatch
