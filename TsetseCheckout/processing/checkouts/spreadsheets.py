@@ -24,6 +24,7 @@ from spartan.utils import spreadsheets as ss
 from TsetseCheckout.user.models import CheckoutRequest
 from TsetseCheckout.data import constants as c
 from TsetseCheckout import errors as e
+from TsetseCheckout.extensions import db
 
 spreadsheets_dir = c.uploaded_spreadsheets
 
@@ -116,6 +117,8 @@ def process_requests(upload):
     if validation_status is not False:
         # If all good, commit them to the DB
         for req in request_objects:
-            req[1].save()
+            req[1].save(commit=False)
+
+        db.session.commit()
 
     return request_objects, validation_status
