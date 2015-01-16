@@ -16,6 +16,11 @@ class Config(object):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
 
+    # Host name
+    #SERVER_NAME = "0.0.0.0:5000/"
+
+    #
+
     # Set up Mail stuff
     MAIL_SERVER = "smtp.gmail.com"
     MAIL_PORT = 465
@@ -47,6 +52,7 @@ class DevConfig(Config):
     # Put the db file in project root
     DB_PATH = os.path.join(Config.PROJECT_ROOT, DB_NAME)
     SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(DB_PATH)
+    SQLALCHEMY_BINDS = {'tsetseDB': 'mysql://root:password@localhost/quickhowto'}
     DEBUG_TB_ENABLED = True
     ASSETS_DEBUG = True  # Don't bundle/minify static assets
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
